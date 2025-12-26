@@ -98,6 +98,7 @@ class App:
         self.rules_textbox = tk.Text(root, width=90, height=7)
         self.rules_textbox.place(x=20, y=290)
         self.rules_textbox.insert("1.0", self.rules_text_default)
+        self.rules_textbox.bind("<<Modified>>", self.on_rules_modified)
 
         # Status
         self.status_var = tk.StringVar(value="Ready")
@@ -181,6 +182,14 @@ class App:
         save_settings(data)
         self.status_var.set("Settings saved.")
 
+    def on_rules_modified(self, event=None):
+        # Auto-save when rules text changes
+        try:
+            self.save_settings_clicked()
+        finally:
+            if event:
+                self.rules_textbox.edit_modified(False)
+
     def parse_rules(self):
         return parse_rules_text(self.rules_textbox.get("1.0", tk.END))
 
@@ -189,6 +198,8 @@ class App:
             messagebox.showerror("Error", "Add at least one folder.")
             return
         rules = self.parse_rules()
+        # Save current settings before starting
+        self.save_settings_clicked()
         observers = []
 
         def runner():
@@ -225,6 +236,8 @@ class App:
         messagebox.showinfo("Test Files Ready", f"Created in:\n\n{td}\n\nStart the watcher to see them organize!")
 
     def exit_clicked(self):
+        # Save settings on exit
+        self.save_settings_clicked()
         try:
             for obs in self.observers:
                 obs.stop()
