@@ -82,5 +82,57 @@ GUI Configuration Tool (Cross-Platform Web UI)
 Notes
 - Only files are moved; new directories are ignored.
 - If a file is created without an extension, it goes to the `Other` (or your chosen) folder.
+
+Python (Cross-Platform) Version
+- Requirements: Python 3.9+ and `pip`.
+- Install dependencies:
+```
+pip install -r requirements.txt
+```
+
+Run (CLI)
+```
+python organizer.py --path "C:\\Downloads" --move-unknown-to Other --quiet
+```
+- Optional: pass custom rules as JSON:
+```
+python organizer.py --path "C:\\Downloads" --rules-json '{"Images":["jpg","png"],"Archives":["zip","7z"]}'
+```
+- Create sample files to test:
+```
+python organizer.py --path "C:\\Downloads" --create-test-files
+```
+
+Cross-Platform GUI (Tkinter)
+- Launch the GUI:
+```
+python gui.py
+```
+- Features:
+  - Path selection (browse)
+  - Configurable unknown-file folder
+  - Quiet mode toggle
+  - Custom file type rules (inline)
+  - Test sample files
+  - Start watcher (top-level only)
+
+Build Executables
+- Windows (PyInstaller):
+```
+pip install pyinstaller
+pyinstaller --onefile organizer.py
+pyinstaller --onefile --windowed gui.py
+```
+- macOS:
+```
+pip install pyinstaller
+pyinstaller --onefile organizer.py
+pyinstaller --onefile --windowed gui.py
+```
+- Linux:
+```
+pip install pyinstaller
+pyinstaller --onefile organizer.py
+```
 # organize
 
