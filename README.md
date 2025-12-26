@@ -92,7 +92,7 @@ pip install -r requirements.txt
 
 Run (CLI)
 ```
-python organizer.py --path "C:\\Downloads" --move-unknown-to Other --quiet
+python organizer.py --path "C:\\Downloads" "D:\\Incoming" --move-unknown-to Other --quiet
 ```
 - Optional: pass custom rules as JSON:
 ```
@@ -100,7 +100,7 @@ python organizer.py --path "C:\\Downloads" --rules-json '{"Images":["jpg","png"]
 ```
 - Create sample files to test:
 ```
-python organizer.py --path "C:\\Downloads" --create-test-files
+python organizer.py --path "C:\\Downloads" "D:\\Incoming" --create-test-files
 ```
 
 Cross-Platform GUI (Tkinter)
@@ -109,12 +109,13 @@ Cross-Platform GUI (Tkinter)
 python gui.py
 ```
 - Features:
+  - Multiple folders list (add/remove/update)
+  - Per-folder unknown target and quiet toggle
   - Path selection (browse)
-  - Configurable unknown-file folder
-  - Quiet mode toggle
-  - Custom file type rules (inline)
-  - Test sample files
-  - Start watcher (top-level only)
+  - Custom file type rules (inline, shared)
+  - Test sample files for selected folder
+  - Remembers settings in settings.json
+  - Start watchers (top-level only)
 
 Build Executables
 - Windows (PyInstaller):

@@ -1,0 +1,15 @@
+{
+  "folders": [
+    {
+      "path": "D:/Downloads",
+      "unknown": "Other",
+      "quiet": false
+    },
+    {
+      "path": "C:/Users/User/Documents",
+      "unknown": "Other",
+      "quiet": false
+    }
+  ],
+  "rules_text": "Images = jpg,jpeg,png\nVideos = mp4,mov,mkv,avi\nAudio = mp3,wav,flac,aac\nDocuments = pdf,doc,docx,txt\n\n"
+}
