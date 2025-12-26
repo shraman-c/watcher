@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Watch Organizer - GUI Config</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+    
+    .container {
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 700px;
+      padding: 40px;
+    }
+    
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+    
+    .subtitle {
+      color: #666;
+      margin-bottom: 30px;
+      font-size: 14px;
+    }
+    
+    .section {
+      margin-bottom: 30px;
+    }
+    
+    .section-title {
+      color: #667eea;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .section-title::before {
+      content: '';
+      display: inline-block;
+      width: 4px;
+      height: 4px;
+      background: #667eea;
+      border-radius: 50%;
+      margin-right: 8px;
+    }
+    
+    label {
+      display: block;
+      color: #333;
+      font-weight: 500;
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+    
+    .input-group {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 15px;
+    }
+    
+    input[type="text"],
+    textarea,
+    select {
+      flex: 1;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'Segoe UI', sans-serif;
+      transition: border-color 0.2s;
+    }
+    
+    input[type="text"]:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 120px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+    }
+    
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #667eea;
+    }
+    
+    .checkbox-label {
+      cursor: pointer;
+      color: #333;
+      font-weight: 500;
+      font-size: 13px;
+    }
+    
+    .browse-btn {
+      padding: 12px 16px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      font-size: 13px;
+      transition: background 0.2s;
+    }
+    
+    .browse-btn:hover {
+      background: #5568d3;
+    }
+    
+    .preview-box {
+      background: #f5f5f5;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 12px;
+      font-family: 'Courier New', monospace;
+      font-size: 12px;
+      color: #333;
+      min-height: 80px;
+      word-break: break-all;
+      white-space: pre-wrap;
+    }
+    
+    .helper-text {
+      color: #999;
+      font-size: 12px;
+      margin-top: 6px;
+    }
+    
+    .button-group {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 12px;
+      margin-top: 30px;
+    }
+    
+    button {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .btn-start {
+      background: #10b981;
+      color: white;
+    }
+    
+    .btn-start:hover {
+      background: #059669;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
+    }
+    
+    .btn-test {
+      background: #3b82f6;
+      color: white;
+    }
+    
+    .btn-test:hover {
+      background: #2563eb;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4);
+    }
+    
+    .btn-preview {
+      background: #f59e0b;
+      color: white;
+    }
+    
+    .btn-preview:hover {
+      background: #d97706;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+    }
+    
+    .btn-exit {
+      background: #6b7280;
+      color: white;
+    }
+    
+    .btn-exit:hover {
+      background: #4b5563;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(107, 114, 128, 0.4);
+    }
+    
+    .status-box {
+      background: #f0f9ff;
+      border-left: 4px solid #3b82f6;
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 20px;
+      font-size: 13px;
+      color: #333;
+      min-height: 50px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .status-box.success {
+      background: #f0fdf4;
+      border-left-color: #10b981;
+      color: #166534;
+    }
+    
+    .status-box.error {
+      background: #fef2f2;
+      border-left-color: #ef4444;
+      color: #991b1b;
+    }
+    
+    .loading {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+    
+    .spinner {
+      border: 3px solid #f3f3f3;
+      border-top: 3px solid #667eea;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .info-box {
+      background: #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 20px;
+      font-size: 12px;
+      color: #92400e;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🔧 Watch Organizer</h1>
+    <p class="subtitle">Configure & test automatic file organization</p>
+    
+    <div class="info-box">
+      💡 <strong>Works on Windows, Linux & macOS</strong> with PowerShell 7+
+    </div>
+    
+    <!-- Watch Directory Section -->
+    <div class="section">
+      <div class="section-title">Watch Directory</div>
+      <div class="input-group">
+        <input type="text" id="pathInput" placeholder="e.g., /home/user/Downloads or C:\Users\...\Downloads" value="">
+        <button class="browse-btn" onclick="browsePath()">Browse</button>
+      </div>
+      <p class="helper-text">Path to the folder you want to organize</p>
+    </div>
+    
+    <!-- Unknown Target Section -->
+    <div class="section">
+      <div class="section-title">Unknown File Target</div>
+      <input type="text" id="unknownInput" placeholder="Folder name for unknown types" value="Other">
+      <p class="helper-text">Files without a recognized type go here</p>
+    </div>
+    
+    <!-- Quiet Mode Section -->
+    <div class="section">
+      <div class="checkbox-group">
+        <input type="checkbox" id="quietCheck">
+        <label for="quietCheck" class="checkbox-label">Quiet Mode (errors only)</label>
+      </div>
+      <p class="helper-text">Suppress informational logs, show only errors</p>
+    </div>
+    
+    <!-- Custom Rules Section -->
+    <div class="section">
+      <div class="section-title">Custom File Type Rules</div>
+      <label>Format: Category = ext1,ext2,ext3 (one per line)</label>
+      <textarea id="rulesInput" placeholder="Images = jpg,jpeg,png,gif
+Videos = mp4,mov,mkv,avi
+Audio = mp3,wav,flac,aac
+Documents = pdf,doc,docx,txt,docm
+Archives = zip,7z,rar,tar,gz"></textarea>
+      <p class="helper-text">Leave blank to use default categories</p>
+    </div>
+    
+    <!-- Command Preview Section -->
+    <div class="section">
+      <div class="section-title">Command Preview</div>
+      <div class="preview-box" id="previewBox">Ready. Click "Update Preview" to see command.</div>
+      <p class="helper-text">This is the command that will be executed</p>
+    </div>
+    
+    <!-- Status Box -->
+    <div class="status-box" id="statusBox">
+      Ready to start
+    </div>
+    
+    <!-- Loading Spinner (hidden by default) -->
+    <div class="loading" id="loadingBox">
+      <div class="spinner"></div>
+      <p>Processing...</p>
+    </div>
+    
+    <!-- Buttons -->
+    <div class="button-group">
+      <button class="btn-start" onclick="startWatcher()">Start Watcher</button>
+      <button class="btn-test" onclick="testFiles()">Test Files</button>
+      <button class="btn-preview" onclick="updatePreview()">Update Preview</button>
+      <button class="btn-exit" onclick="closeApp()">Exit</button>
+    </div>
+  </div>
+
+  <script>
+    // Initialize with default path
+    document.addEventListener('DOMContentLoaded', () => {
+      const isWindows = navigator.platform.includes('Win');
+      if (isWindows) {
+        document.getElementById('pathInput').value = 'C:\\Users\\' + (new Date().getTime()) + '\\Downloads';
+      } else {
+        document.getElementById('pathInput').value = '/home/' + 'user' + '/Downloads';
+      }
+      updatePreview();
+    });
+
+    function showStatus(message, type = 'info') {
+      const box = document.getElementById('statusBox');
+      box.textContent = message;
+      box.className = 'status-box ' + type;
+    }
+
+    function showLoading(show) {
+      document.getElementById('loadingBox').style.display = show ? 'block' : 'none';
+    }
+
+    function browsePath() {
+      showStatus('📁 Folder selection not available in web UI. Please paste path manually.', 'info');
+      document.getElementById('pathInput').focus();
+    }
+
+    function updatePreview() {
+      const path = document.getElementById('pathInput').value.trim();
+      const unknown = document.getElementById('unknownInput').value.trim() || 'Other';
+      const quiet = document.getElementById('quietCheck').checked ? ' -Quiet:$true' : '';
+      const rules = document.getElementById('rulesInput').value.trim() ? ' -Rules (custom rules)' : '';
+
+      const cmd = `./watch-organizer.ps1 -Path "${path}" -MoveUnknownTo "${unknown}"${quiet}${rules}`;
+      document.getElementById('previewBox').textContent = cmd;
+    }
+
+    function startWatcher() {
+      const path = document.getElementById('pathInput').value.trim();
+      if (!path) {
+        showStatus('❌ Path is required', 'error');
+        return;
+      }
+
+      showLoading(true);
+      fetch('/api/start-watcher', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          path: path,
+          unknown: document.getElementById('unknownInput').value.trim() || 'Other',
+          quiet: document.getElementById('quietCheck').checked,
+          rules: document.getElementById('rulesInput').value.trim()
+        })
+      })
+      .then(r => r.json())
+      .then(data => {
+        showLoading(false);
+        if (data.success) {
+          showStatus('✅ Watcher started! Check the PowerShell window for logs.', 'success');
+        } else {
+          showStatus('❌ Error: ' + data.error, 'error');
+        }
+      })
+      .catch(err => {
+        showLoading(false);
+        showStatus('❌ Request failed: ' + err, 'error');
+      });
+    }
+
+    function testFiles() {
+      const path = document.getElementById('pathInput').value.trim();
+      if (!path) {
+        showStatus('❌ Path is required', 'error');
+        return;
+      }
+
+      showLoading(true);
+      fetch('/api/create-test-files', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ path: path })
+      })
+      .then(r => r.json())
+      .then(data => {
+        showLoading(false);
+        if (data.success) {
+          showStatus('✅ Test files created in: ' + data.testDir + '\nStart the watcher to see them organize!', 'success');
+        } else {
+          showStatus('❌ Error: ' + data.error, 'error');
+        }
+      })
+      .catch(err => {
+        showLoading(false);
+        showStatus('❌ Request failed: ' + err, 'error');
+      });
+    }
+
+    function closeApp() {
+      if (confirm('Close the configuration tool?')) {
+        fetch('/api/shutdown', { method: 'POST' }).then(() => {
+          showStatus('Closing...', 'info');
+          setTimeout(() => window.close(), 1000);
+        });
+      }
+    }
+
+    // Update preview when inputs change
+    document.getElementById('pathInput').addEventListener('change', updatePreview);
+    document.getElementById('unknownInput').addEventListener('change', updatePreview);
+    document.getElementById('quietCheck').addEventListener('change', updatePreview);
+    document.getElementById('rulesInput').addEventListener('change', updatePreview);
+  </script>
+</body>
+</html>

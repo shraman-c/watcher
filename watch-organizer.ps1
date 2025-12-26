@@ -10,9 +10,6 @@
 .PARAMETER Path
   The directory to watch for new files.
 
-.PARAMETER IncludeSubdirectories
-  If true, watches subdirectories as well. Defaults to false.
-
 .PARAMETER MoveUnknownTo
   Target folder name for unknown file types. Defaults to 'Other'.
 
@@ -26,7 +23,7 @@
   ./watch-organizer.ps1 -Path "C:\Downloads"
 
 .EXAMPLE
-  ./watch-organizer.ps1 -Path "C:\Incoming" -IncludeSubdirectories:$true -Quiet
+  ./watch-organizer.ps1 -Path "C:\Incoming" -Quiet
 
 .EXAMPLE
   $custom = @{ Code = @('py','js','ts','cs','java'); Archives = @('zip','rar','7z'); }
@@ -41,8 +38,6 @@ param(
   [Parameter(Mandatory=$true)]
   [ValidateScript({ Test-Path $_ -PathType Container })]
   [string]$Path,
-
-  [bool]$IncludeSubdirectories = $false,
 
   [string]$MoveUnknownTo = 'Other',
 
@@ -109,15 +104,15 @@ function Get-UniqueDestinationPath([string]$destDir, [string]$fileName) {
   return $candidate
 }
 
-# Prepare watcher
+# Prepare watcher (top-level only; does not recurse into subfolders)
 $fsw = New-Object System.IO.FileSystemWatcher
 $fsw.Path = (Resolve-Path -LiteralPath $Path).Path
 $fsw.Filter = '*.*'
-$fsw.IncludeSubdirectories = $IncludeSubdirectories
+$fsw.IncludeSubdirectories = $false
 $fsw.NotifyFilter = [System.IO.NotifyFilters]'FileName, Size, CreationTime'
 $fsw.EnableRaisingEvents = $true
 
-Write-Info "Watching '$($fsw.Path)' (IncludeSubdirs=$IncludeSubdirectories). Press Ctrl+C to stop."
+Write-Info "Watching '$($fsw.Path)' (top-level only). Press Ctrl+C to stop."
 
 # Event: Created
 $action = {
@@ -125,32 +120,47 @@ $action = {
   $fullPath = $eventArgs.FullPath
   $name = [System.IO.Path]::GetFileName($fullPath)
 
+  $context = $event.MessageData
+  $watchPath = $context.Path
+  $unknownTarget = $context.MoveUnknownTo
+  $quietMode = [bool]$context.Quiet
+  $rules = $context.Rules
+
+  function Local-WriteInfo($msg) { if (-not $quietMode) { Write-Host "[INFO] $msg" -ForegroundColor Cyan } }
+  function Local-WriteErr($msg) { Write-Host "[ERROR] $msg" -ForegroundColor Red }
+
   # Ignore directories
   if (Test-Path -LiteralPath $fullPath -PathType Container) { return }
 
   # Wait until file is ready
   if (-not (Wait-ForFileReady -filePath $fullPath)) {
-    Write-Err "File not ready after retries: $name"
+    Local-WriteErr "File not ready after retries: $name"
     return
   }
 
   $ext = [System.IO.Path]::GetExtension($name).ToLowerInvariant().TrimStart('.')
-  $category = if ([string]::IsNullOrWhiteSpace($ext)) { $MoveUnknownTo } else { Get-CategoryForExtension -ext $ext }
-  $destDir = Join-Path $Path $category
+  if ([string]::IsNullOrWhiteSpace($ext)) { $category = $unknownTarget }
+  else {
+    $category = $unknownTarget
+    foreach ($cat in $rules.Keys) {
+      if ($rules[$cat] -contains $ext) { $category = $cat; break }
+    }
+  }
+  $destDir = Join-Path $watchPath $category
   Ensure-Directory -dir $destDir
 
   $destPath = Get-UniqueDestinationPath -destDir $destDir -fileName $name
 
   try {
     Move-Item -LiteralPath $fullPath -Destination $destPath
-    Write-Info "Moved: $name -> $category"
+    Local-WriteInfo "Moved: $name -> $category"
   } catch {
-    Write-Err "Failed to move '$name': $($_.Exception.Message)"
+    Local-WriteErr "Failed to move '$name': $($_.Exception.Message)"
   }
 }
 
-# Register event handler
-$subscription = Register-ObjectEvent -InputObject $fsw -EventName Created -SourceIdentifier 'OrganizeFileCreated' -Action $action
+# Register event handler with context
+$subscription = Register-ObjectEvent -InputObject $fsw -EventName Created -SourceIdentifier 'OrganizeFileCreated' -MessageData @{ Path = $fsw.Path; MoveUnknownTo = $MoveUnknownTo; Quiet = $Quiet; Rules = $normalizedRules } -Action $action
 
 try {
   while ($true) { Wait-Event -Timeout 5 | Out-Null }
