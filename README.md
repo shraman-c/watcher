@@ -1,83 +1,70 @@
-Auto-Organize New Files by Type (Windows PowerShell)
+Watcher (Python) — Auto-Organize New Files by Type
 
 Overview
-- Watches a folder and, when a new file is created, moves it into a subfolder based on its file type (extension). Unknown types go to "Other". It does not scan existing files; only reacts to new ones.
+- Event-driven organizer that moves newly created files into subfolders based on their file type (extension).
+- Watches only the top-level of selected folders; subfolders are never scanned or modified.
+- Unknown types go to a configurable folder (default: "Other").
 
-Quick Start
-- Requirements: Windows PowerShell 5+.
-- Script: see [watch-organizer.ps1](watch-organizer.ps1).
+Install
+- Python 3.9+ recommended.
+- Install dependencies:
+  - `pip install -r requirements.txt`
 
-Run
-1) Open PowerShell in this folder.
-2) Start the watcher for a target directory (replace the path):
+CLI Usage
+- Start watchers for one or more folders from the integrated file [gui.py](gui.py)
+  - `python gui.py --path C:/Downloads --path D:/Inbox --unknown Other --quiet`
+  - Options:
+    - `--path`: repeat for multiple folders
+    - `--unknown`: target folder for unknown extensions
+    - `--quiet`: reduce logs to errors only
+    - `--rules`: JSON text mapping categories to extensions (optional)
+    - `--create-test`: create sample files in each folder
 
-```
-powershell -ExecutionPolicy Bypass -File .\watch-organizer.ps1 -Path "C:\Downloads"
-```
+GUI Usage
+- Run the GUI: see [gui.py](gui.py)
+  - `python gui.py`
+  - Features:
+    - Manage multiple folders (add/update/remove)
+    - Per-folder settings: unknown target, quiet mode
+    - Rules editor (JSON or simple lines: `Category = ext1,ext2`)
+    - Auto-saves to [settings.json](settings.json)
+    - Start watchers with one click
+    - Create test files for quick verification
 
-- Optional flags:
-  - `-Quiet:$true` — reduce logs to errors only.
-  - `-MoveUnknownTo "Misc"` — change where unknown extensions go.
+Rules Format
+- JSON example:
+  - `{ "Images": ["jpg","png"], "Documents": ["pdf","docx"] }`
+- Simple lines:
+  - `Images = jpg,png,webp`  (one category per line)
+- If omitted, built-in defaults are used (Images, Videos, Audio, Documents, Archives, Code, Installers, Fonts).
 
-**Important:** Only the top-level of the target directory is monitored. Subfolders and their structures are never scanned or modified, preserving existing project layouts.
-Customize Categories
-- By default, categories include Images, Videos, Audio, Documents, Archives, Code, Installers, Fonts.
-- You can override with a custom hashtable:
+Icon Options
+- The GUI icon can be sourced in this priority order:
+  - Embedded base64 in [gui.py](gui.py) (set `ICON_BASE64_DEFAULT`)
+  - Env var `WATCHER_ICON_BASE64`
+  - `icon_base64` field in [settings.json](settings.json)
+  - File [watcher-icon.b64](watcher-icon.b64) (base64 PNG)
+  - [watcher-icon.ico](watcher-icon.ico) or [watcher-icon.png](watcher-icon.png)
 
-```
-$rules = @{ 
-	Images = @('jpg','jpeg','png');
-	Code   = @('py','js','ts');
-	Archives = @('zip','rar','7z');
-}
-powershell -ExecutionPolicy Bypass -File .\watch-organizer.ps1 -Path "C:\Downloads" -Rules $rules -MoveUnknownTo "Other"
-```
+Generate Base64 Icon
+- PowerShell (Windows):
+  - `[Convert]::ToBase64String([IO.File]::ReadAllBytes("watcher-icon.png")) | Out-File -Encoding ascii watcher-icon.b64`
+- Python:
+  - `python -c "import base64;print(base64.b64encode(open('watcher-icon.png','rb').read()).decode())" > watcher-icon.b64`
+- Paste the base64 string into the `ICON_BASE64_DEFAULT` block in [gui.py](gui.py), or place it in [watcher-icon.b64](watcher-icon.b64), or set `WATCHER_ICON_BASE64`.
 
-How It Works
-- Uses `FileSystemWatcher` to listen for `Created` events **in the top-level directory only**.
-- Does not scan or recurse into existing subdirectories (preserves project structures).
-- Waits briefly until the new file is ready (not locked) before moving.
-- Ensures destination folders exist; avoids name collisions by appending a counter.
+Startup (Windows)
+- Create a Task Scheduler task to run `python gui.py` at logon, or package an EXE (see below) and run that.
 
-Stop the Watcher
-- Press `Ctrl+C` in the PowerShell window to stop.
+Packaging
+- Optional: build a standalone executable with PyInstaller:
+  - `pip install pyinstaller`
+  - `pyinstaller --noconfirm --noconsole --onefile gui.py --name watcher`
+  - Place icon file(s) alongside the executable or embed base64 as needed.
 
-Run as Background Job (optional)
-- You can start it in a separate PowerShell window:
-
-```
-Start-Process powershell -ArgumentList '-NoExit','-ExecutionPolicy','Bypass','-File','"' + (Resolve-Path .\watch-organizer.ps1).Path + '"','-Path','"C:\Downloads"'
-```
-
-Build as Native Windows EXE
-- To create a standalone .exe (no PowerShell required):
-  1. Run the build script:
-  ```
-  powershell -ExecutionPolicy Bypass -File .\build-exe.ps1
-  ```
-  2. This generates `watch-organizer.exe` in the repo folder.
-  3. Run the EXE directly:
-  ```
-  .\watch-organizer.exe -Path "C:\Downloads"
-  ```
-- The EXE can be moved anywhere and run without PowerShell or execution policy restrictions.
-
-GUI Configuration Tool (Cross-Platform Web UI)
-  For an interactive, no-command-line way to set up and test:
-  ```
-  powershell -ExecutionPolicy Bypass -File .\web-server.ps1
-  ```
-  A browser window opens automatically with a beautiful, responsive UI.
-  Features:
-  - Path selection (type or paste)
-  - Configurable unknown-file folder
-  - Quiet mode toggle
-  - Custom file type rules (edit inline)
-  - Command preview
-  - Test sample files button
-  - Direct watcher launch
-  
-  **Works on Windows, Linux, and macOS** (with PowerShell 7+)
+Notes
+- Only new files in the top-level of each watched folder are acted upon.
+- The app never scans existing files or subfolders.
 
 Notes
 - Only files are moved; new directories are ignored.
