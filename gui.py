@@ -199,6 +199,11 @@ class WatcherGUI:
         self.settings = self.load_settings()
         self.folders: List[Dict] = self.settings.get("folders", [])
         self.rules_text: str = self.settings.get("rules_text", "")
+        if not self.rules_text.strip():
+            # Prefill rules editor with the current DEFAULT_RULES
+            self.rules_text = "\n".join(
+                f"{cat} = {','.join(exts)}" for cat, exts in DEFAULT_RULES.items()
+            )
         self.status_var = tk.StringVar(value="Idle")
 
         # UI layout
