@@ -282,9 +282,8 @@ class WatcherGUI:
         ttk.Label(rules_header, text="Rules (JSON or 'Category = ext1,ext2')").pack(side=tk.LEFT)
         tools = ttk.Frame(rules_header)
         tools.pack(side=tk.RIGHT)
-        ttk.Button(tools, text="Load Defaults", command=self.on_rules_load_defaults).pack(side=tk.LEFT)
-        ttk.Button(tools, text="Append Defaults", command=self.on_rules_append_defaults).pack(side=tk.LEFT, padx=4)
-        ttk.Button(tools, text="Clear", command=self.on_rules_clear).pack(side=tk.LEFT)
+        ttk.Button(tools, text="Apply Defaults", command=self.on_rules_apply_defaults).pack(side=tk.LEFT)
+        ttk.Button(tools, text="Clear", command=self.on_rules_clear).pack(side=tk.LEFT, padx=4)
 
         rules_frame = ttk.Frame(right)
         rules_frame.pack(fill=tk.BOTH, expand=True, pady=6)
@@ -305,21 +304,12 @@ class WatcherGUI:
         status.pack(fill=tk.X)
         ttk.Label(status, textvariable=self.status_var, anchor="w").pack(side=tk.LEFT, padx=8, pady=4)
 
-    def on_rules_load_defaults(self) -> None:
-        lines = []
-        for cat, exts in DEFAULT_RULES.items():
-            lines.append(f"{cat} = {','.join(exts)}")
-        text = "\n".join(lines)
-        self.rules_textbox.delete("1.0", tk.END)
-        self.rules_textbox.insert("1.0", text)
-        self.on_rules_modified()
-
     def on_rules_clear(self) -> None:
         self.rules_textbox.delete("1.0", tk.END)
         self.on_rules_modified()
 
-    def on_rules_append_defaults(self) -> None:
-        # Merge defaults into current editor content (replace or add per category)
+    def on_rules_apply_defaults(self) -> None:
+        """Merge defaults into current editor content, replacing categories with defaults and preserving extras."""
         current = self.rules_textbox.get("1.0", tk.END)
         lines = [l.rstrip() for l in current.splitlines()]
         existing: Dict[str, str] = {}
@@ -328,7 +318,6 @@ class WatcherGUI:
                 left, right = l.split("=", 1)
                 cat = left.strip()
                 existing[cat] = f"{cat} = {right.strip()}"
-        # Apply defaults
         for cat, exts in DEFAULT_RULES.items():
             existing[cat] = f"{cat} = {','.join(exts)}"
         merged = "\n".join(existing[c] for c in sorted(existing.keys()))
