@@ -5,11 +5,17 @@ import tkinter as tk
 from tkinter import filedialog, messagebox
 from pathlib import Path
 from typing import Dict, List, Optional
+import base64
+import tempfile
+import os
 
 from organizer import start_watcher, create_test_files
 
 
 CONFIG_PATH = Path(__file__).with_name("settings.json")
+ICON_PNG = Path(__file__).with_name("watcher-icon.png")
+ICON_ICO = Path(__file__).with_name("watcher-icon.ico")
+ICON_B64 = Path(__file__).with_name("watcher-icon.b64")
 DEFAULT_RULES_TEXT = """Images = jpg,jpeg,png
 Videos = mp4,mov,mkv,avi
 Audio = mp3,wav,flac,aac
@@ -55,14 +61,17 @@ def parse_rules_text(text: str) -> Optional[Dict[str, List[str]]]:
 class App:
     def __init__(self, root: tk.Tk):
         self.root = root
-        self.root.title("Watcher - Cross-Platform GUI")
+        self.root.title("Watcher - Automate Organization")
         self.root.geometry("760x580")
         self.root.configure(bg="#ffffff")
+        self.icon_img = None
+        self.set_icon()
 
         self.observers: List = []
 
         # Load settings
         data = load_settings()
+        self.settings_data = data
         self.folders = data.get("folders", [])  # list of {path, unknown, quiet}
         if not self.folders:
             self.folders = [{"path": str(Path.home() / "Downloads"), "unknown": "Other", "quiet": False}]
@@ -80,16 +89,19 @@ class App:
         # Path field
         tk.Label(root, text="Path", bg="#ffffff").place(x=20, y=170)
         self.path_var = tk.StringVar()
+        self.path_var.trace_add("write", self.on_field_change)
         tk.Entry(root, textvariable=self.path_var, width=70).place(x=100, y=170)
         tk.Button(root, text="Browse", command=self.browse_path).place(x=620, y=168)
 
         # Unknown target
         tk.Label(root, text="Unknown target", bg="#ffffff").place(x=20, y=200)
         self.unknown_var = tk.StringVar(value="Other")
+        self.unknown_var.trace_add("write", self.on_field_change)
         tk.Entry(root, textvariable=self.unknown_var, width=25).place(x=140, y=200)
 
         # Quiet checkbox
         self.quiet_var = tk.BooleanVar(value=False)
+        self.quiet_var.trace_add("write", self.on_field_change)
         tk.Checkbutton(root, text="Quiet (errors only)", variable=self.quiet_var, bg="#ffffff").place(x=320, y=198)
 
         # Rules
@@ -113,6 +125,51 @@ class App:
         self.refresh_list()
         self.load_first_into_form()
         self.root.protocol("WM_DELETE_WINDOW", self.exit_clicked)
+
+    def set_icon(self):
+        try:
+            # Priority: env var -> settings.json -> watcher-icon.b64 -> .ico -> .png
+            # From environment variable WATCHER_ICON_BASE64
+            env_b64 = os.environ.get("WATCHER_ICON_BASE64")
+            if env_b64:
+                tmp = Path(tempfile.gettempdir()) / "watcher-icon.tmp.png"
+                try:
+                    tmp.write_bytes(base64.b64decode(env_b64.strip()))
+                    self.icon_img = tk.PhotoImage(file=str(tmp))
+                    self.root.iconphoto(True, self.icon_img)
+                except Exception:
+                    pass
+
+            # From settings.json field icon_base64
+            if self.icon_img is None and isinstance(getattr(self, "settings_data", {}), dict):
+                settings_b64 = self.settings_data.get("icon_base64")
+                if settings_b64:
+                    tmp2 = Path(tempfile.gettempdir()) / "watcher-icon.settings.tmp.png"
+                    try:
+                        tmp2.write_bytes(base64.b64decode(settings_b64.strip()))
+                        self.icon_img = tk.PhotoImage(file=str(tmp2))
+                        self.root.iconphoto(True, self.icon_img)
+                    except Exception:
+                        pass
+
+            # From watcher-icon.b64 file
+            if self.icon_img is None and ICON_B64.exists():
+                b64 = ICON_B64.read_text().strip()
+                tmp3 = Path(tempfile.gettempdir()) / "watcher-icon.file.tmp.png"
+                try:
+                    tmp3.write_bytes(base64.b64decode(b64))
+                    self.icon_img = tk.PhotoImage(file=str(tmp3))
+                    self.root.iconphoto(True, self.icon_img)
+                except Exception:
+                    pass
+
+            if ICON_ICO.exists():
+                self.root.iconbitmap(default=str(ICON_ICO))
+            if ICON_PNG.exists() and self.icon_img is None:
+                self.icon_img = tk.PhotoImage(file=str(ICON_PNG))
+                self.root.iconphoto(True, self.icon_img)
+        except Exception:
+            pass
 
     def refresh_list(self):
         self.listbox.delete(0, tk.END)
@@ -189,6 +246,10 @@ class App:
         finally:
             if event:
                 self.rules_textbox.edit_modified(False)
+
+    def on_field_change(self, *args):
+        # Auto-save when path/unknown/quiet fields change
+        self.save_settings_clicked()
 
     def parse_rules(self):
         return parse_rules_text(self.rules_textbox.get("1.0", tk.END))

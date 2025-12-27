@@ -11,5 +11,5 @@
       "quiet": false
     }
   ],
-  "rules_text": "Images = jpg,jpeg,png\nVideos = mp4,mov,mkv,avi\nAudio = mp3,wav,flac,aac\nDocuments = pdf,doc,docx,txt\n\n"
+  "rules_text": "Images = jpg,jpeg,png,psd\nVideos = mp4,mov,mkv,avi\nAudio = mp3,wav,flac,aac\nDocuments = pdf,doc,docx,txt,pptx,ppt\n\n\n\n\n\n\n\n"
 }

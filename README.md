@@ -116,6 +116,12 @@ python gui.py
   - Test sample files for selected folder
   - Remembers settings in settings.json
   - Start watchers (top-level only)
+ - App Icon:
+  - Provide a base64 PNG in one of these ways:
+    - File: place `watcher-icon.b64` next to `gui.py`.
+    - Settings: add `"icon_base64": "<your_base64_png>"` to `settings.json`.
+    - Env var: set `WATCHER_ICON_BASE64` to your base64 string.
+  - Alternatively, drop `watcher-icon.ico` or `watcher-icon.png` in the same folder.
 
 Build Executables
 - Windows (PyInstaller):
