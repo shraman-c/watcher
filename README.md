@@ -1,5 +1,7 @@
 <div align="center">
 
+<img width="200" height="200" alt="binoculars-design-vector-icon-sy" src="https://github.com/user-attachments/assets/53c6e78d-25da-4727-8fb9-eb77ab3514d6" />
+
 # 📂 Watcher — Auto-Organize New Files by Type
 
 [![Python](https://img.shields.io/badge/Python-3.9+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
