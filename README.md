@@ -6,10 +6,13 @@
 [![Watchdog](https://img.shields.io/badge/Watchdog-4.0+-orange?style=for-the-badge)](https://pypi.org/project/watchdog/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Platform](https://img.shields.io/badge/Platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey?style=for-the-badge)](https://github.com)
+[![Download](https://img.shields.io/badge/Download-watcher.exe-blue?style=for-the-badge&logo=windows)](watcher.exe)
 
 **Automatically organize your downloads and other folders by file type in real-time!**
 
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Configuration](#-configuration) • [FAQ](#-faq)
+💡 **Quick Start:** Download [watcher.exe](watcher.exe) and run it — no installation needed!
+
+[Features](#-features) • [Quick Start](#-quick-start) • [Installation](#-installation) • [Usage](#-usage) • [Configuration](#-configuration) • [FAQ](#-faq)
 
 </div>
 
@@ -20,8 +23,11 @@
 - [📂 Watcher — Auto-Organize New Files by Type](#-watcher--auto-organize-new-files-by-type)
   - [📋 Table of Contents](#-table-of-contents)
   - [✨ Features](#-features)
+  - [⚡ Quick Start](#-quick-start)
+    - [🪟 Windows Users (Easiest)](#-windows-users-easiest)
   - [🚀 Installation](#-installation)
-    - [Prerequisites](#prerequisites)
+    - [For Python Users](#for-python-users)
+      - [Prerequisites](#prerequisites)
     - [Steps](#steps)
   - [💻 Usage](#-usage)
     - [GUI Mode](#gui-mode)
@@ -30,10 +36,15 @@
     - [File Organization Rules](#file-organization-rules)
     - [Custom Icon Setup](#custom-icon-setup)
   - [📦 Packaging \& Deployment](#-packaging--deployment)
+    - [🪟 Windows Executable](#-windows-executable)
+    - [🍎 macOS Application Bundle](#-macos-application-bundle)
+    - [🐧 Linux Binary](#-linux-binary)
   - [🔧 Advanced Setup](#-advanced-setup)
+    - [🪟 Windows: Auto-start on Login](#-windows-auto-start-on-login)
+    - [🍎 macOS: Auto-start on Login](#-macos-auto-start-on-login)
+    - [🐧 Linux: Auto-start on Login](#-linux-auto-start-on-login)
   - [❓ FAQ](#-faq)
   - [🤝 Contributing](#-contributing)
-  - [📄 License](#-license)
 
 ---
 
@@ -56,9 +67,26 @@
 
 ---
 
+## ⚡ Quick Start
+
+### 🪟 Windows Users (Easiest)
+
+**No Python installation required!**
+
+1. **Download** [watcher.exe](watcher.exe) from this repository
+2. **Double-click** to run the application
+3. **Add folders** to watch and click "Start Watchers"
+4. **Done!** Your files will be automatically organized
+
+**Optional:** Set up auto-start on login (see [Advanced Setup](#-advanced-setup))
+
+---
+
 ## 🚀 Installation
 
-### Prerequisites
+### For Python Users
+
+#### Prerequisites
 
 - **Python 3.9+** (recommended)
 - **pip** package manager
@@ -773,17 +801,22 @@ Contributions are welcome! Here's how you can help:
 
 ---
 
-## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
----
 
 <div align="center">
 
-**Made with ❤️ by developers who hate messy download folders**
+**Made with ❤️ by [ShramanC](https://github.com/shraman-c)**
+
+Built for developers who hate messy download folders
 
 ⭐ Star this repo if you find it useful!
 
+---
+
+*Watcher v1.0.0 — Automate Organization*
+
+*© 2025 Shraman Chaudhuri. All rights reserved.*
+
+*This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.*
 </div>
 
