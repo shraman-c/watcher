@@ -283,7 +283,8 @@ class WatcherGUI:
         tools = ttk.Frame(rules_header)
         tools.pack(side=tk.RIGHT)
         ttk.Button(tools, text="Load Defaults", command=self.on_rules_load_defaults).pack(side=tk.LEFT)
-        ttk.Button(tools, text="Clear", command=self.on_rules_clear).pack(side=tk.LEFT, padx=4)
+        ttk.Button(tools, text="Append Defaults", command=self.on_rules_append_defaults).pack(side=tk.LEFT, padx=4)
+        ttk.Button(tools, text="Clear", command=self.on_rules_clear).pack(side=tk.LEFT)
 
         rules_frame = ttk.Frame(right)
         rules_frame.pack(fill=tk.BOTH, expand=True, pady=6)
@@ -315,6 +316,24 @@ class WatcherGUI:
 
     def on_rules_clear(self) -> None:
         self.rules_textbox.delete("1.0", tk.END)
+        self.on_rules_modified()
+
+    def on_rules_append_defaults(self) -> None:
+        # Merge defaults into current editor content (replace or add per category)
+        current = self.rules_textbox.get("1.0", tk.END)
+        lines = [l.rstrip() for l in current.splitlines()]
+        existing: Dict[str, str] = {}
+        for l in lines:
+            if "=" in l:
+                left, right = l.split("=", 1)
+                cat = left.strip()
+                existing[cat] = f"{cat} = {right.strip()}"
+        # Apply defaults
+        for cat, exts in DEFAULT_RULES.items():
+            existing[cat] = f"{cat} = {','.join(exts)}"
+        merged = "\n".join(existing[c] for c in sorted(existing.keys()))
+        self.rules_textbox.delete("1.0", tk.END)
+        self.rules_textbox.insert("1.0", merged)
         self.on_rules_modified()
 
     def refresh_folder_list(self) -> None:
