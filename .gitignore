@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual Environments
+.venv/
+.venv-*/
+venv/
+ENV/
+env/
+
+# PyInstaller
+build/
+dist/
+*.spec
+version_info.txt
+
+# auto-py-to-exe
+output/
+
+# Icon files (generated from base64)
+watcher-icon.png
+watcher-icon.ico
+watcher-icon.b64
+extract_icon.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Logs
+*.log
+
+# Temporary files
+tempCodeRunnerFile.py
+temp_*.py
+
+# User settings (optional - remove this line if you want to track settings)
+# settings.json

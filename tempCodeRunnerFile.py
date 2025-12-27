@@ -1,8 +1,0 @@
- "Images":   ["jpg","jpeg","png","gif","bmp","tiff","webp","svg"],
-    "Videos":   ["mp4","mov","mkv","avi","wmv","flv","webm","m4v"],
-    "Audio":    ["mp3","wav","flac","aac","ogg","m4a","wma"],
-    "Documents":["pdf","doc","docx","xls","xlsx","ppt","pptx","txt","rtf"],
-    "Archives": ["zip","rar","7z","tar","gz","bz2"],
-    "Code":     ["py","js","ts","tsx","jsx","java","cs","cpp","c","h","go","rs","rb","php","html","css","json","yaml","yml","xml","sql","sh","ps1","bat"],
-    "Installers":["exe","msi","msix","apk","dmg","pkg"],
-    "Fonts":    ["ttf","otf","woff","woff2"],
