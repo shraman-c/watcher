@@ -97,7 +97,7 @@
 1. **Clone or download this repository**
 
 ```bash
-git clone https://github.com/yourusername/watcher.git
+git clone https://github.com/shraman-c/watcher.git
 cd watcher
 ```
 
