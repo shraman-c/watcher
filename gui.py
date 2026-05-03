@@ -1,14 +1,11 @@
 
-"""Watcher - PyQt6 desktop application for automated file organization."""
+"""Watcher - PyQt6 based desktop application for automated file organization."""
 
 from __future__ import annotations
 
 import json
-<<<<<<< HEAD
 import importlib.util
 import subprocess
-=======
->>>>>>> origin/main
 import platform
 import sys
 from datetime import datetime
@@ -16,7 +13,6 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-<<<<<<< HEAD
 BASE_DIR = Path(__file__).resolve().parent
 REQUIREMENTS_PATH = BASE_DIR / "requirements.txt"
 REQUIRED_DEPENDENCIES = {
@@ -53,8 +49,6 @@ def _ensure_dependencies() -> None:
 
 _ensure_dependencies()
 
-=======
->>>>>>> origin/main
 from PyQt6.QtCore import QTimer, pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
@@ -223,7 +217,7 @@ class WatcherApp(QMainWindow):
 
     def __init__(self) -> None:
         super().__init__()
-        self.setWindowTitle("Watcher - PyQt6")
+        self.setWindowTitle("Watcher - Automate File Organization")
         self.resize(1200, 800)
         self.setMinimumSize(900, 580)
 
