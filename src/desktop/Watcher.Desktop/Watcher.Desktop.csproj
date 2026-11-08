@@ -10,6 +10,12 @@
     <LangVersion>latest</LangVersion>
     <RootNamespace>Watcher.Desktop</RootNamespace>
     <AssemblyName>Watcher</AssemblyName>
+    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.0.0</AssemblyVersion>
+    <FileVersion>2.0.0.0</FileVersion>
+    <Product>Watcher 2.0</Product>
+    <Description>Modern Windows Desktop File Organizer</Description>
+    <Copyright>Copyright (c) 2026 Shraman Chaudhuri</Copyright>
     <NoWarn>$(NoWarn);MSB3277</NoWarn>
   </PropertyGroup>
 

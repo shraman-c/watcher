@@ -49,6 +49,7 @@ if ($makeAppx) {
     Write-Host "makeappx.exe not in PATH (Windows SDK not installed). Creating standalone zip package..." -ForegroundColor Yellow
     $zipOut = "$OutputDir\Watcher-v2.0.0-win-x64.zip"
     if (Test-Path $zipOut) { Remove-Item $zipOut -Force }
-    Compress-Archive -Path "$DistPath\*" -DestinationPath $zipOut -Force
+    Add-Type -AssemblyName System.IO.Compression.FileSystem
+    [System.IO.Compression.ZipFile]::CreateFromDirectory($DistPath, $zipOut, [System.IO.Compression.CompressionLevel]::Optimal, $false)
     Write-Host "Created standalone distribution zip at: $zipOut" -ForegroundColor Green
 }
