@@ -1,0 +1,14 @@
+{
+  "name": "watcher-monorepo",
+  "version": "2.0.0",
+  "private": true,
+  "description": "Watcher 2.0 - Next-generation Windows desktop file organizer",
+  "scripts": {
+    "dev": "npm run dev --prefix src/frontend",
+    "build:frontend": "npm run build --prefix src/frontend",
+    "build:backend": "dotnet build Watcher.sln -c Release",
+    "test": "dotnet test Watcher.sln",
+    "publish:desktop": "npm run build:frontend && dotnet publish src/desktop/Watcher.Desktop/Watcher.Desktop.csproj -c Release -r win-x64 --self-contained false"
+  }
+}
+
