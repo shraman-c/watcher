@@ -73,3 +73,4 @@ Watcher 2.0 is a complete reimagining and architectural overhaul of the Watcher 
 - [Architecture Guide](docs/ARCHITECTURE.md) — System architecture, sequence diagrams, and threat model.
 - [Migration Guide](docs/MIGRATION_GUIDE.md) — Zero-data-loss configuration upgrade from Watcher 1.0.
 - [Build and Packaging Guide](docs/BUILD_AND_PACKAGING.md) — Local builds, testing, and distribution packaging.
+
