@@ -1,3 +1,4 @@
+
 # Python
 __pycache__/
 *.py[cod]
@@ -5,6 +6,7 @@ __pycache__/
 *.so
 .Python
 watcher.exe
+
 # Virtual Environments
 .venv/
 .venv-*/
@@ -31,6 +33,22 @@ watcher-icon.ico
 watcher-icon-fixed.ico
 watcher-icon.b64
 extract_icon.py
+
+# .NET
+.dotnet_home/
+.nuget/
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Node.js
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
 
 # IDE
 .vscode/
@@ -63,6 +81,22 @@ Code/
 tempCodeRunnerFile.py
 temp_*.py
 
+# .NET / C#
+[Bb]in/
+[Oo]bj/
+.dotnet_home/
+.nuget/
+*.user
+*.suo
+dotnet-install.ps1
+
+# Node.js / Frontend
+node_modules/
+dist/
+src/frontend/dist/
+npm-debug.log*
+*.local
+
 # User settings (optional - remove this line if you want to track settings)
 settings.json
 BUILD_BACKGROUND.md
@@ -78,5 +112,4 @@ PROJECT_SUMMARY.txt
 PROJECT_COMPLETION.md
 pyqt6_shell.py
 QUICK_REFERENCE.md
-settings.json
 test_kinter_features.py
