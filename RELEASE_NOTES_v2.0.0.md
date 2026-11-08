@@ -50,10 +50,10 @@ Watcher 2.0 is a complete reimagining and architectural overhaul of the Watcher 
 
 ## 📂 Release Assets
 
-| Asset Name | Architecture | Type | Size | Description |
+| Asset Name | Architecture | Type | Size | SHA-256 Checksum |
 | :--- | :--- | :--- | :--- | :--- |
-| **`Watcher-v2.0.0-win-x64.zip`** | Windows x64 | Standalone Portable Archive | ~2.47 MB | Complete portable release — extract and run `Watcher.exe` |
-| **`AppxManifest.xml`** | Windows x64 | MSIX Packaging Manifest | ~1.4 KB | Windows App SDK / Store deployment manifest |
+| **`Watcher-v2.0.0-win-x64.zip`** | Windows x64 | Standalone Portable Archive | ~2.47 MB | `73DCEB8FE83A21EB8EDF27BC8C4DCC2EE31807E8445272ED9D404B13FFA03592` |
+| **`AppxManifest.xml`** | Windows x64 | MSIX Packaging Manifest | ~1.4 KB | N/A |
 
 ---
 
