@@ -1,17 +1,23 @@
 import React from 'react';
 
 interface StatusBadgeProps {
-  status: 'active' | 'paused' | 'error' | 'not_found' | 'SUCCESS' | 'FAILED' | 'SKIPPED' | string;
+  status?: string | number | null;
   label?: string;
   size?: 'sm' | 'md';
 }
 
 export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label, size = 'sm' }) => {
-  const norm = status.toLowerCase();
+  let statusStr = '';
+  if (status === 0 || status === '0') statusStr = 'success';
+  else if (status === 1 || status === '1') statusStr = 'failed';
+  else if (status === 2 || status === '2') statusStr = 'skipped';
+  else if (status != null) statusStr = String(status);
+
+  const norm = statusStr.toLowerCase();
 
   let bgClass = 'bg-[#272C36] text-[#A0A8B5] border-[#2B313E]';
   let dotClass = 'bg-[#A0A8B5]';
-  let displayLabel = label || status;
+  let displayLabel = label || statusStr || 'Unknown';
 
   if (norm === 'active' || norm === 'success') {
     bgClass = 'bg-[rgba(53,183,122,0.12)] text-[#35B77A] border-[rgba(53,183,122,0.3)]';
@@ -36,4 +42,3 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({ status, label, size = 
     </span>
   );
 };
-

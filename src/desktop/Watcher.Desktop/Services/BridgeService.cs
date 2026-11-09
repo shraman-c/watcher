@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Text.Json;
 using System.Text.Json.Nodes;
+using System.Text.Json.Serialization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Web.WebView2.WinForms;
 using Watcher.Core.Interfaces;
@@ -125,7 +126,11 @@ public class BridgeService
                     return (true, updated, null);
 
                 case "watcher.removeFolder":
-                    string removeId = payload.GetString() ?? (payload.TryGetProperty("id", out var rId) ? rId.GetString() ?? "" : "");
+                    string removeId = "";
+                    if (payload.ValueKind == JsonValueKind.String)
+                        removeId = payload.GetString() ?? "";
+                    else if (payload.ValueKind == JsonValueKind.Object && payload.TryGetProperty("id", out var rId) && rId.ValueKind == JsonValueKind.String)
+                        removeId = rId.GetString() ?? "";
                     if (string.IsNullOrEmpty(removeId)) return (false, null, "Folder ID is required.");
                     await _monitoringService.StopFolderAsync(removeId);
                     bool deleted = await _folderRepository.DeleteAsync(removeId);
@@ -204,7 +209,7 @@ public class BridgeService
                     return (true, ruleToSave, null);
 
                 case "watcher.deleteRule":
-                    string ruleId = payload.GetString() ?? "";
+                    string ruleId = payload.ValueKind == JsonValueKind.String ? payload.GetString() ?? "" : "";
                     bool delRule = await _ruleRepository.DeleteAsync(ruleId);
                     var refreshedRules = await _ruleRepository.GetAllAsync();
                     _ruleEngine.RefreshRules(refreshedRules);
@@ -235,15 +240,27 @@ public class BridgeService
                     return (true, catToSave, null);
 
                 case "watcher.deleteCategory":
-                    string catId = payload.GetString() ?? "";
+                    string catId = payload.ValueKind == JsonValueKind.String ? payload.GetString() ?? "" : "";
                     bool delCat = await _ruleRepository.DeleteCategoryAsync(catId);
                     return (true, delCat, null);
 
                 case "watcher.getActivity":
-                    string? search = payload.TryGetProperty("search", out var sp) ? sp.GetString() : null;
-                    string? category = payload.TryGetProperty("category", out var cp) ? cp.GetString() : null;
-                    int page = payload.TryGetProperty("page", out var pgProp) ? pgProp.GetInt32() : 1;
-                    int pageSize = payload.TryGetProperty("pageSize", out var pzProp) ? pzProp.GetInt32() : 20;
+                    string? search = null;
+                    string? category = null;
+                    int page = 1;
+                    int pageSize = 20;
+
+                    if (payload.ValueKind == JsonValueKind.Object)
+                    {
+                        if (payload.TryGetProperty("search", out var sp) && sp.ValueKind == JsonValueKind.String)
+                            search = sp.GetString();
+                        if (payload.TryGetProperty("category", out var cp) && cp.ValueKind == JsonValueKind.String)
+                            category = cp.GetString();
+                        if (payload.TryGetProperty("page", out var pgProp) && pgProp.TryGetInt32(out var pg))
+                            page = pg;
+                        if (payload.TryGetProperty("pageSize", out var pzProp) && pzProp.TryGetInt32(out var pz))
+                            pageSize = pz;
+                    }
 
                     var items = await _activityRepository.QueryAsync(search, category, null, null, null, page, pageSize);
                     int total = await _activityRepository.GetTotalCountAsync(search, category, null, null, null);
@@ -254,12 +271,12 @@ public class BridgeService
                     return (true, true, null);
 
                 case "watcher.undoActivity":
-                    string logId = payload.GetString() ?? "";
+                    string logId = payload.ValueKind == JsonValueKind.String ? payload.GetString() ?? "" : "";
                     bool undone = await _organizationService.UndoOperationAsync(logId);
                     return (true, undone, null);
 
                 case "watcher.openFileInExplorer":
-                    string filePath = payload.GetString() ?? "";
+                    string filePath = payload.ValueKind == JsonValueKind.String ? payload.GetString() ?? "" : "";
                     if (File.Exists(filePath) || Directory.Exists(filePath))
                     {
                         Process.Start("explorer.exe", $"/select,\"{filePath}\"");
@@ -290,7 +307,7 @@ public class BridgeService
                     return (true, newSettings, null);
 
                 case "watcher.createSampleFiles":
-                    string targetFolder = payload.GetString() ?? "";
+                    string targetFolder = payload.ValueKind == JsonValueKind.String ? payload.GetString() ?? "" : "";
                     if (!Directory.Exists(targetFolder))
                     {
                         var first = (await _folderRepository.GetAllAsync()).FirstOrDefault();
@@ -419,7 +436,8 @@ public class BridgeService
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-        WriteIndented = false
+        WriteIndented = false,
+        Converters = { new JsonStringEnumConverter() }
     };
 }
 

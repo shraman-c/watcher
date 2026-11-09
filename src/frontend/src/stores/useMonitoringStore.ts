@@ -56,7 +56,7 @@ export const useMonitoringStore = create<MonitoringStore>((set, get) => ({
   fetchInitialData: async () => {
     set({ isLoading: true, error: null });
     try {
-      const [status, folders, rules, categories, stats, settings] = await Promise.all([
+      const results = await Promise.allSettled([
         bridge.call<{ isRunning: boolean }>('watcher.getStatus'),
         bridge.call<WatchedFolder[]>('watcher.getFolders'),
         bridge.call<OrganizationRule[]>('watcher.getRules'),
@@ -64,6 +64,13 @@ export const useMonitoringStore = create<MonitoringStore>((set, get) => ({
         bridge.call<DashboardStatistics>('watcher.getStatistics'),
         bridge.call<ApplicationSettings>('watcher.getSettings'),
       ]);
+
+      const status = results[0].status === 'fulfilled' ? results[0].value : null;
+      const folders = results[1].status === 'fulfilled' ? results[1].value : [];
+      const rules = results[2].status === 'fulfilled' ? results[2].value : [];
+      const categories = results[3].status === 'fulfilled' ? results[3].value : [];
+      const stats = results[4].status === 'fulfilled' ? results[4].value : null;
+      const settings = results[5].status === 'fulfilled' ? results[5].value : null;
 
       set({
         isMonitoringActive: status?.isRunning ?? false,

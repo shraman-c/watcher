@@ -76,7 +76,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onOpenAddFolder })
   const failedCount = statistics?.failedOperations ?? 0;
   const successRate = totalOrganized > 0 ? Math.round((successCount / totalOrganized) * 100) : 100;
 
-  const chartData = statistics?.activityOverTime && statistics.activityOverTime.length > 0
+  const chartData = (statistics?.activityOverTime && statistics.activityOverTime.length >= 2)
     ? statistics.activityOverTime
     : [
         { date: 'Mon', total: 0, success: 0 },
@@ -277,8 +277,8 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onOpenAddFolder })
             </div>
           </div>
 
-          <div className="flex-1 w-full min-h-[220px]">
-            <ResponsiveContainer width="100%" height="100%">
+          <div className="w-full h-[220px]">
+            <ResponsiveContainer width="100%" height={220}>
               <AreaChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <defs>
                   <linearGradient id="colorTotal" x1="0" y1="0" x2="0" y2="1">
@@ -369,7 +369,7 @@ export const DashboardPage: React.FC<DashboardPageProps> = ({ onOpenAddFolder })
                       {log.destinationPath || '-'}
                     </td>
                     <td className="py-3 text-[#A0A8B5] whitespace-nowrap">
-                      {new Date(log.timestamp).toLocaleTimeString()}
+                      {log.timestamp ? new Date(log.timestamp).toLocaleTimeString() : '-'}
                     </td>
                     <td className="py-3 text-right pr-1">
                       <StatusBadge status={log.status} />

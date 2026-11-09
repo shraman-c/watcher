@@ -12,6 +12,53 @@ import { StatisticsPage } from './pages/StatisticsPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { AboutPage } from './pages/AboutPage';
 
+interface ErrorBoundaryProps {
+  children: React.ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class PageErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  constructor(props: ErrorBoundaryProps) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+
+  static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+    console.error('Page render error caught:', error, errorInfo);
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="p-8 max-w-xl mx-auto my-12 bg-[#20242D] border border-[#E36F75]/40 rounded-2xl text-center shadow-card">
+          <div className="w-12 h-12 rounded-full bg-[#E36F75]/20 text-[#E36F75] mx-auto flex items-center justify-center mb-4 text-xl">
+            ⚠️
+          </div>
+          <h3 className="text-lg font-bold text-[#F3F5F8]">Error Displaying Page</h3>
+          <p className="text-xs text-[#A0A8B5] mt-2 mb-5 leading-relaxed">
+            {this.state.error?.message || 'An unexpected rendering error occurred in this view.'}
+          </p>
+          <button
+            onClick={() => this.setState({ hasError: false, error: null })}
+            className="px-5 py-2.5 bg-[#6C9BFF] text-white rounded-xl text-xs font-semibold hover:bg-[#5287F6] transition-colors shadow-subtle"
+          >
+            Retry View
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 export const App: React.FC = () => {
   const { currentPage, theme, toastMessage, clearToast } = useAppStore();
   const { fetchInitialData } = useMonitoringStore();
@@ -62,13 +109,15 @@ export const App: React.FC = () => {
           <AnimatePresence mode="wait">
             <motion.div
               key={currentPage}
-              initial={{ opacity: 0, y: 6 }}
+              initial={{ opacity: 0, y: 4 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.15, ease: 'easeOut' }}
+              exit={{ opacity: 0, y: -4 }}
+              transition={{ duration: 0.12, ease: 'easeOut' }}
               className="h-full"
             >
-              {renderCurrentPage()}
+              <PageErrorBoundary key={currentPage}>
+                {renderCurrentPage()}
+              </PageErrorBoundary>
             </motion.div>
           </AnimatePresence>
         </main>
@@ -107,4 +156,3 @@ export const App: React.FC = () => {
   );
 };
 export default App;
-
